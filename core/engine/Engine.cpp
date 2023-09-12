@@ -50,7 +50,7 @@ void Engine::Run() {
     emscripten_sleep(targetTimeToSleep / 1000);
 #else
     // std::this_thread::sleep_for(targetTimeToSleep * 1ms/1000);
-    SDL_Delay(targetTimeToSleep / 1000);
+    SDL_Delay(16);
 #endif
   }
 }
