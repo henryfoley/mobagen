@@ -9,6 +9,24 @@ Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, B
 
   // todo: add here your code code here do make the boid follow the bounded box rule
   // hint: use this->world->engine->window->size() and desiredDistance
+  Vector2f screenBounds = Vector2f(this->world->engine->window->size().x, this->world->engine->window->size().y);
+
+
+  if(boid->getPosition().x > screenBounds.x - float(desiredDistance) ||
+      boid->getPosition().x < 0 + float(desiredDistance) ||
+      boid->getPosition().y > screenBounds.y - float(desiredDistance) ||
+      boid->getPosition().y < 0 + float(desiredDistance))
+  {
+      Vector2f distanceFromBounds =  screenBounds/2 - boid->getPosition();
+      if(distanceFromBounds.getMagnitude() > 0)
+      {
+        distanceFromBounds.normalized();
+        //distanceFromBounds /= float(desiredDistance);
+        force = distanceFromBounds/distanceFromBounds.getMagnitude();
+      }
+
+  }
+  /**/
 
   return force;
 }
