@@ -11,6 +11,8 @@ Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, B
   // hint: use this->world->engine->window->size() and desiredDistance
   Vector2f screenBounds = Vector2f(this->world->engine->window->size().x, this->world->engine->window->size().y);
 
+  //NOT A GOOD SOLUTION
+  //STRUGGLED W/THIS SECTION 
 
   if(boid->getPosition().x > screenBounds.x - float(desiredDistance) ||
       boid->getPosition().x < 0 + float(desiredDistance) ||
@@ -21,12 +23,10 @@ Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, B
       if(distanceFromBounds.getMagnitude() > 0)
       {
         distanceFromBounds.normalized();
-        //distanceFromBounds /= float(desiredDistance);
         force = distanceFromBounds/distanceFromBounds.getMagnitude();
       }
 
   }
-  /**/
 
   return force;
 }
