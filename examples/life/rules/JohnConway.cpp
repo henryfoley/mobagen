@@ -13,7 +13,7 @@ void JohnConway::Step(World& world) {
       // world.setnext({x,y}, true/false
     }
   }
-  
+
 }
 
 int JohnConway::CountNeighbors(World& world, Point2D point) {
