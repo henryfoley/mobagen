@@ -8,26 +8,39 @@ void JohnConway::Step(World& world) {
     for(int x = 0; x<world.SideSize(); x++)
     {
       Point2D point = Point2D(x,y);
-      int neighbor = CountNeighbors(world, point);
+      int neighbors = CountNeighbors(world, point);
+      bool isAlive = world.Get(point);
+      world.SetNext(point, isAlive);
       //rules go here
-      // world.setnext({x,y}, true/false
+      //Get gets from the current buffer
+      //Set sets to the next buffer
+      //Rules 1 and 3
+
+
+      if (isAlive && neighbors< 2 || neighbors>3)
+      {
+        world.SetNext({x,y},false);
+      }
+      //Rule 4
+      if(!isAlive && neighbors == 3)
+      {
+        world.SetNext({x,y},true);
+      }
+
     }
   }
-
 }
 
 int JohnConway::CountNeighbors(World& world, Point2D point) {
-  int boardSize = world.SideSize();
   int count = 0;
-  world. ;
-  point. ;
-  //int pointSize = point;
+  int boardSize = world.SideSize();
 
   for (int a = -1; a <= 1; a++)
   {
-    for(int b = -1; b <-1; b++)
+    for(int b = -1; b <=1; b++)
     {
-      if(a!=0 && b!=0 && world.Get({p.b+b, p.a+a}))
+      if((a + point.x >= 0 && a + point.x < boardSize && b + point.y >= 0 && b + point.y < boardSize )
+          && (a!=0 || b!=0) && (world.Get(Point2D(a, b)) || !world.Get(Point2D(a, b))))
       {
         count++;
       }
