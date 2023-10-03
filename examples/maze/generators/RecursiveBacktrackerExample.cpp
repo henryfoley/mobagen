@@ -3,7 +3,11 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 bool RecursiveBacktrackerExample::Step(World* w) {
-
+  if(stack.empty())
+  {
+    stack.push_back({0,0});
+  }
+return 0;
 }
 
 void RecursiveBacktrackerExample::Clear(World* world) {
@@ -30,6 +34,23 @@ Point2D RecursiveBacktrackerExample::randomStartPoint(World* world) {
 std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const Point2D& p) {
   auto sideOver2 = w->GetSize() / 2;
   std::vector<Point2D> visitables;
+
+  //Check Up, Down, Left, Right to see if they are visitable
+  //Check if Neighbors are within world space
+  p.Up();
+  p.Down();
+  p.Left();
+  p.Right();
+
+  //Check if neighbors have been visitable
+  //Check node color?
+  visited[][];
+
+  //If neighbor is visitable add it to the visitables vector
+  if()
+  {
+    visitables.push_back();
+  }
 
   return visitables;
 }
