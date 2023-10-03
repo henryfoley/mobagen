@@ -32,7 +32,6 @@ Vector2f SeparationRule::computeForce(const std::vector<Boid*>& neighborhood, Bo
        separatingForce/=countCloseFlockmates;
     }
 
-
   }
   // todo: find and apply force only on the closest mates
 

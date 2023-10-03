@@ -12,22 +12,17 @@ Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, B
   Vector2f screenBounds = Vector2f(this->world->engine->window->size().x, this->world->engine->window->size().y);
 
   //NOT A GOOD SOLUTION
-  //STRUGGLED W/THIS SECTION 
+  //STRUGGLED W/THIS SECTION
+  auto boidPosition =boid->getPosition();
 
-  if(boid->getPosition().x > screenBounds.x - float(desiredDistance) ||
-      boid->getPosition().x < 0 + float(desiredDistance) ||
-      boid->getPosition().y > screenBounds.y - float(desiredDistance) ||
-      boid->getPosition().y < 0 + float(desiredDistance))
-  {
-      Vector2f distanceFromBounds =  screenBounds/2 - boid->getPosition();
-      if(distanceFromBounds.getMagnitude() > 0)
-      {
-        distanceFromBounds.normalized();
-        force = distanceFromBounds/distanceFromBounds.getMagnitude();
-      }
-
-  }
-
+  if(boidPosition.x < 0 + float(desiredDistance))
+    force.x = -1*(boidPosition.x -float(desiredDistance)) ;
+  if(boidPosition.y < 0 + float(desiredDistance))
+    force.y = (boidPosition.y - float(desiredDistance))*(-1);
+  if(boidPosition.x > screenBounds.x - float(desiredDistance))
+    force.x = (float(desiredDistance)- boidPosition.x);
+  if(boidPosition.y > screenBounds.y - float(desiredDistance))
+    force.y = -1*(boidPosition.y-float(desiredDistance));
   return force;
 }
 

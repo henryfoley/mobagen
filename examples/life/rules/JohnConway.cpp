@@ -10,10 +10,6 @@ void JohnConway::Step(World& world) {
       int neighbors = CountNeighbors(world, point);
       bool isAlive = world.Get(point);
       world.SetNext(point, isAlive);
-      //rules go here
-      //Get gets from the current buffer
-      //Set sets to the next buffer
-      //Rules 1 and 3
       if(isAlive){
         if(neighbors<2 || neighbors>3){
           world.SetNext({i,j},false);
