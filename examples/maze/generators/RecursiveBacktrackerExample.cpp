@@ -37,20 +37,30 @@ std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const 
 
   //Check Up, Down, Left, Right to see if they are visitable
   //Check if Neighbors are within world space
-  p.Up();
-  p.Down();
-  p.Left();
-  p.Right();
 
-  //Check if neighbors have been visitable
-  //Check node color?
-  visited[][];
+  //Check if neighbors have been visited
 
   //If neighbor is visitable add it to the visitables vector
-  if()
-  {
-    visitables.push_back();
-  }
 
+  //Point above
+  if(!visited[p.Up().x][p.Up().y] && p.Up().y>=0)
+  {
+    visitables.push_back(p.Up());
+  }
+  //Point below
+  if(!visited[p.Down().x][p.Down().y] && p.Down().y<=sideOver2)
+  {
+    visitables.push_back(p.Down());
+  }
+  //Point to the left
+  if(!visited[p.Left().x][p.Left().y] && p.Left().x>=0)
+  {
+    visitables.push_back(p.Left());
+  }
+  //Point to the right
+  if(!visited[p.Right().x][p.Right().y] && p.Right().x<=sideOver2)
+  {
+    visitables.push_back(p.Right());
+  }
   return visitables;
 }
