@@ -4,40 +4,63 @@
 #include <climits>
 bool RecursiveBacktrackerExample::Step(World* w) {
 
-  Color32 greenColor = Color32(0,1,0,1);
-  Color32 redColor = Color32(1,0,0,1);
-  Color32 blackColor = Color32(0,0,0,1);
-  Point2D currentPoint;
+  const Color32 greenColor = Color32(0,1,0,1);
+  const Color32 redColor = Color32(1,0,0,1);
+  const Color32 blackColor = Color32(0,0,0,1);
+  Point2D currentPoint = Point2D(0,0);
   std::vector<Point2D> currentNeighbors;
+  currentPoint = randomStartPoint(w);
 
-  if(stack.empty())
+  //For last step duration
+  if(stack.empty() && currentPoint == Point2D{INT_MAX, INT_MAX})
   {
+    return false;
+  }
+  if(stack.empty()){ //For starting
     currentPoint = randomStartPoint(w);
     w->SetNodeColor(currentPoint,greenColor);
-    stack.emplace_back(currentPoint);
+    stack.push_back(currentPoint);
+    return true;
   }
-  else
-  {
-    currentPoint = Point2D(stack.back().x,stack.back().y);
-    w->SetNodeColor(currentPoint,redColor);
-  }
-  //Iterate through visitables
+//  else{
+//    currentPoint = Point2D(stack.back().x,stack.back().y);
+//    w->SetNodeColor(currentPoint,redColor);
+//  }
+
+  //Set Current Point to visited and get its Neighbors
   visited[currentPoint.x][currentPoint.y] = true;
   currentNeighbors = getVisitables(w,currentPoint);
 
 
-  if (!currentNeighbors.empty())
-  {
+  //Get delta of the point
+  //Next - current
+  // If delta x is positive break the east wall from the current
+  // If delta x is negative break the west wall from the current
+  // If delta y is positive break the north wall from the current
+  // If delta y is negative break the south wall from the current
+
+  if (!currentNeighbors.empty()){
+    //Change Initialization
     int random;
-    if(w->GetNode(currentNeighbors[random]) == w->GetNorth(currentPoint))
-    {
-      //Gets rid of wall
-      w->SetNorth();
+    Point2D randomNeighbor = currentNeighbors[random];
+    if(w->GetNorth(randomNeighbor)){
+      //Gets rid of North wall
+      w->SetNorth(randomNeighbor,true);
     }
-    stack.emplace_back(currentNeighbors[random]);
+    if(){
+      //Gets rid of South wall
+    }
+    if(){
+      //Gets rid of East wall
+    }
+    if(){
+      //Gets rid of West wall
+    }
+    //Add Random Neighbor to Stack
+    stack.push_back(randomNeighbor);
   }
-  else
-  {
+  else{
+    //Remove Last Element
     stack.pop_back();
     w->SetNodeColor(currentPoint, blackColor);
   }
@@ -70,33 +93,20 @@ std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const 
   auto sideOver2 = w->GetSize() / 2;
   std::vector<Point2D> visitables;
 
-  //Check Up, Down, Left, Right to see if they are visitable
-  //Check if Neighbors are within world space
-
-  //Check if neighbors have been visited
-
-  //If neighbor is visitable add it to the visitables vector
-
-
-
   //Point above
-  if(!visited[p.Up().x][p.Up().y] && p.Up().y>=-sideOver2)
-  {
+  if(!visited[p.Up().x][p.Up().y] && p.Up().y>=-sideOver2){
     visitables.push_back(p.Up());
   }
   //Point below
-  if(!visited[p.Down().x][p.Down().y] && p.Down().y<=sideOver2)
-  {
+  if(!visited[p.Down().x][p.Down().y] && p.Down().y<=sideOver2){
     visitables.push_back(p.Down());
   }
   //Point to the left
-  if(!visited[p.Left().x][p.Left().y] && p.Left().x>=-sideOver2)
-  {
+  if(!visited[p.Left().x][p.Left().y] && p.Left().x>=-sideOver2){
     visitables.push_back(p.Left());
   }
   //Point to the right
-  if(!visited[p.Right().x][p.Right().y] && p.Right().x<=sideOver2)
-  {
+  if(!visited[p.Right().x][p.Right().y] && p.Right().x<=sideOver2){
     visitables.push_back(p.Right());
   }
   return visitables;
