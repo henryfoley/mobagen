@@ -3,19 +3,45 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 bool RecursiveBacktrackerExample::Step(World* w) {
+
+  Color32 greenColor = Color32(0,1,0,1);
+  Color32 redColor = Color32(1,0,0,1);
+  Color32 blackColor = Color32(0,0,0,1);
+  Point2D currentPoint;
+  std::vector<Point2D> currentNeighbors;
+
   if(stack.empty())
   {
-    //random start point
-    stack.push_back({0,0});
+    currentPoint = randomStartPoint(w);
+    w->SetNodeColor(currentPoint,greenColor);
+    stack.emplace_back(currentPoint);
   }
   else
   {
-
+    currentPoint = Point2D(stack.back().x,stack.back().y);
+    w->SetNodeColor(currentPoint,redColor);
   }
   //Iterate through visitables
+  visited[currentPoint.x][currentPoint.y] = true;
+  currentNeighbors = getVisitables(w,currentPoint);
 
-  //Gets rid of wall
-  w->SetNorth();
+
+  if (!currentNeighbors.empty())
+  {
+    int random;
+    if(w->GetNode(currentNeighbors[random]) == w->GetNorth(currentPoint))
+    {
+      //Gets rid of wall
+      w->SetNorth();
+    }
+    stack.emplace_back(currentNeighbors[random]);
+  }
+  else
+  {
+    stack.pop_back();
+    w->SetNodeColor(currentPoint, blackColor);
+  }
+
 return 0;
 }
 
