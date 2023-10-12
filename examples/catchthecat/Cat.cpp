@@ -8,6 +8,8 @@
 Point2D Cat::Move(World* world) {
   auto rand = Random::Range(0, 5);
   auto pos = world->getCat();
+
+  //If nowhere to go, use random position
   switch (rand) {
     case 0:
       return World::NE(pos);
@@ -26,7 +28,7 @@ Point2D Cat::Move(World* world) {
   }
 }
 
-Point2D Cat::Seek(World* world)
+/*Point2D Cat::Seek(World* world)
 {
   auto catPos = world->getCat();
   const int NUM_POTENTIAL_DIRECTIONS = 6;
@@ -59,7 +61,7 @@ Point2D Cat::Seek(World* world)
       /*for(int j = 0; j < openList.size(); j++){
         if(visitablePoints[i] == openList[j]){
           break;
-        }*/
+        }
       // todo:Check if visitable point is in the open list, if not add it
       }
     }
@@ -79,7 +81,7 @@ Point2D Cat::Seek(World* world)
 
   //Placeholder
   return World::NE(catPos);
-}
+}*/
 
 Point2D Cat::GenerateTarget(World* world)
 {
@@ -102,33 +104,28 @@ Point2D Cat::GenerateTarget(World* world)
     if(world->catWinsOnSpace(current)){
       break;
     }
-    for(int i=0; i <World::neighbors(current).size(); i++){
-      if(!cameFrom[i]){
-        queue.push(cameFrom[i]);
-        cameFrom[i] = current;
-      }
-    }
 
-    // todo:Calculate
+    //If current neighbor is valid, is not blocked,
+    //is not cat, and has not been visited, add to queue and
+    //record where it came from
+
+    // todo:Is neighbor.y the right key value for cameFrom.contains()?
     auto neighbors = world->neighbors(current);
-    for(int i=0; i <visited.size(); i++)
-    {
-      if(neighbors[i] == visited[i])
-      {
-        break;
+    for(const auto & neighbor : neighbors){
+      if(world->isValidPosition(neighbor) &&
+          world->getContent(neighbor)     &&
+          neighbor != world->getCat()        &&
+          !cameFrom.contains(neighbor.y)){
+        queue.push(neighbor);
+        cameFrom[neighbor.y][neighbor.x] = current;
       }
     }
 
-    for(int i=0; i <neighbors.size(); i++){
-      // todo:If current neighbor is not blocked then
-
-      if(world->isValidPosition(neighbors[i]) &&
-          world->getContent(neighbors[i])     &&
-          neighbors[i] != world->getCat())
-      {
-
-
-      }
+    //Backtracking
+    std::vector<Point2D> path;
+    while(current != catPos) {
+      path.push_back(current);
+      current = cameFrom[current.y][current.x];
     }
   }
 }
