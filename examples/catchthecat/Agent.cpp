@@ -39,48 +39,61 @@ using namespace std;
 vector<Point2D> Agent::generatePath(World* world)
 {
   auto catPos = world->getCat();
-  std::queue<Point2D> queue;
+  std::queue<Point2D> frontier;
+  std::unordered_set<Point2D> frontierSet;
   std::unordered_set<Point2D> visited;
   std::map<int, std::map<int,Point2D>> cameFrom;
   std::vector<Point2D> path;
   cameFrom[catPos.y][catPos.x] = Point2D(0,0);
 
   //Add Cat's initial position to the open list and marked visited
-  queue.push(catPos);
+  frontier.push(catPos);
   visited.insert(catPos);
+  frontierSet.insert(catPos);
+
+  Point2D ExitPoint = Point2D(INT_MAX, INT_MAX);
 
   //BFS Algorithm
-  while(!queue.empty()){
-    auto current = queue.front();
-    queue.pop();
+  while(!frontier.empty()) {
+    auto current = frontier.front();
+    frontier.pop();
+    frontierSet.erase(current);
 
-    //If cat wins on space then break the loop
-    if(world->catWinsOnSpace(current)){
+    // If cat wins on space then break the loop
+    if (world->catWinsOnSpace(current)) {
+      ExitPoint = current;
       break;
     }
+    // If current neighbor is valid, is not blocked,
+    // is not cat, and has not been visited, add to queue and
+    // record where it came from
 
-    //If current neighbor is valid, is not blocked,
-    //is not cat, and has not been visited, add to queue and
-    //record where it came from
-
-    // todo:Is neighbor.y the right key value for cameFrom.contains()?
     auto neighbors = world->neighbors(current);
-    for(const auto & neighbor : neighbors){
-      if(world->isValidPosition(neighbor) && //Is on Map
-          world->getContent(neighbor)     && //Isn't Blocked
-          neighbor != world->getCat()        && //Is not cat
-          !visited.contains(neighbor)){  //Hasn't already been visited
-        queue.push(neighbor);                     //Add neighbor to Queue
-        visited.insert(neighbor);                 //Add neighbor to visited
-        cameFrom[neighbor.y][neighbor.x] = current;   //Record root
+    for (const auto& neighbor : neighbors) {
+      if (world->isValidPosition(neighbor)             // Is on Map
+          && !world->getContent(neighbor)              // Isn't Blocked
+          && neighbor != world->getCat()                  // Is not cat
+          && !frontierSet.contains(neighbor)       // Isn't on the frontier
+          && !visited.contains(neighbor))          // Hasn't already been visited
+      {
+        frontier.push(neighbor);                      // Add neighbor to Queue
+        frontierSet.insert(neighbor);                 // Add neighbor to frontier
+        visited.insert(neighbor);                     // Add neighbor to visited
+        cameFrom[neighbor.y][neighbor.x] = current;       // Record root
+
+        if (world->catWinsOnSpace(neighbor)) {
+          ExitPoint = neighbor;
+          break;
+        }
       }
     }
-
-    //Backtracking
-    while(current != catPos) {
-      path.push_back(current);
-      current = cameFrom[current.y][current.x];
-    }
+  }
+  //Backtracking
+  if(ExitPoint != Point2D(INT_MAX, INT_MAX)){
+      while(ExitPoint != catPos) {
+        path.push_back(ExitPoint);
+        ExitPoint = cameFrom[ExitPoint.y][ExitPoint.x];
+      }
   }
   return path;
 }

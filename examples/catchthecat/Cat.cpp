@@ -4,36 +4,82 @@
 #include <queue>
 #include <map>
 #include <unordered_set>
+#include <algorithm>
 
 Point2D Cat::Move(World* world) {
   auto rand = Random::Range(0, 5);
   auto pos = world->getCat();
+  auto randPos = Point2D(INT_MAX, INT_MAX);
+  bool randPositionValid = false;
 
-  //Create variable to determine if the cat has a route
+  // Create variable to determine if the cat has a route
   std::vector<Point2D> path = Agent::generatePath(world);
-  if(!path.empty()){
-    return path.front();
-  }
-  else{
-    //If nowhere to go, use random position
-    switch (rand) {
-      case 0:
-        return World::NE(pos);
-      case 1:
-        return World::NW(pos);
-      case 2:
-        return World::E(pos);
-      case 3:
-        return World::W(pos);
-      case 4:
-        return World::SW(pos);
-      case 5:
-        return World::SE(pos);
-      default:
-        throw "random out of range";
+  if (!path.empty()) {
+    return path.back();
+  } else {
+    auto neighbors = world->neighbors(pos);
+    // Shuffle Neighbors
+    for (int i = 0; i < neighbors.size(); i++) {
+      int j = Random::Range(0, 5);
+      std::swap(neighbors[i], neighbors[j]);
+    }
+    for (const auto& neighbor : neighbors) {
+      if (!world->getContent(neighbor)) {
+        return neighbor;
+      }
+      // If no availible options
+      return neighbor;
     }
   }
 }
+  /*else {
+    // If nowhere to go, use random position
+    auto neighbors = world->neighbors(pos);
+    auto randomNeighbor = neighbors[rand];
+    if(!world->getContent(randomNeighbor) && !world->isValidPosition(randomNeighbor)){
+      randPositionValid = true;
+    }
+    while (!randPositionValid){
+      if(!world->getContent(randomNeighbor) && !world->isValidPosition(randomNeighbor)){
+        rand = Random::Range(0, 5);
+      }
+      randomNeighbor = neighbors[rand];
+    }
+    return randomNeighbor;
+  }*/
+  /*else
+  {
+    //If nowhere to go, use random position
+    switch (rand){
+        case 0:
+          if(world->getContent(World::NE(pos))){
+            return = World::NE(pos);
+          }
+        case 1:
+          if(world->getContent(World::NW(pos)){
+            return = World::NW(pos);
+          }
+        case 2:
+          if(world->getContent(World::E(pos)){
+            return = World::E(pos);
+          }
+        case 3:
+          if(world->getContent(World::W(pos)){
+            return = World::W(pos);
+          }
+        case 4:
+          if(world->getContent(World::SW(pos)){
+            return = World::SW(pos);
+          }
+        case 5:
+          if(world->getContent(World::SE(pos)){
+            return = World::SE(pos);
+          }
+        default:
+          throw "random out of range";
+      }
+  }
+}*/
 
 /*Point2D Cat::Seek(World* world)
 {
