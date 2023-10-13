@@ -10,23 +10,28 @@ Point2D Cat::Move(World* world) {
   auto pos = world->getCat();
 
   //Create variable to determine if the cat has a route
-
-  //If nowhere to go, use random position
-  switch (rand) {
-    case 0:
-      return World::NE(pos);
-    case 1:
-      return World::NW(pos);
-    case 2:
-      return World::E(pos);
-    case 3:
-      return World::W(pos);
-    case 4:
-      return World::SW(pos);
-    case 5:
-      return World::SE(pos);
-    default:
-      throw "random out of range";
+  std::vector<Point2D> path = Agent::generatePath(world);
+  if(!path.empty()){
+    return path.front();
+  }
+  else{
+    //If nowhere to go, use random position
+    switch (rand) {
+      case 0:
+        return World::NE(pos);
+      case 1:
+        return World::NW(pos);
+      case 2:
+        return World::E(pos);
+      case 3:
+        return World::W(pos);
+      case 4:
+        return World::SW(pos);
+      case 5:
+        return World::SE(pos);
+      default:
+        throw "random out of range";
+    }
   }
 }
 
@@ -85,7 +90,7 @@ Point2D Cat::Move(World* world) {
   return World::NE(catPos);
 }*/
 
-Point2D Cat::GenerateTarget(World* world)
+/*Point2D Cat::GenerateTarget(World* world)
 {
   auto catPos = world->getCat();
   std::queue<Point2D> queue;
@@ -130,4 +135,4 @@ Point2D Cat::GenerateTarget(World* world)
       current = cameFrom[current.y][current.x];
     }
   }
-}
+}*/

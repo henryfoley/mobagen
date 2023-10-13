@@ -15,6 +15,8 @@ Point2D Catcher::Catch(World* world){
   //Easy Solution
       //Conduct a Breadth First Search Algorithm from the cat
       //Whatever the last point is place a blocker
+  std::vector<Point2D> path = Agent::generatePath(world);
+  return path.back();
   //Complex Solution
       //Give weights to each position that the cat may take
       //Score corresponds to the amount of moves it would take for the cat to reach
