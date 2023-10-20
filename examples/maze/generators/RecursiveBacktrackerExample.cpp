@@ -29,6 +29,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
 
   //Set Current Point to visited and get its Neighbors
   visited[currentPoint.x][currentPoint.y] = true;
+  w->SetNodeColor(currentPoint, redColor);
   currentNeighbors = getVisitables(w,currentPoint);
 
 
@@ -39,22 +40,27 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   // If delta y is positive break the north wall from the current
   // If delta y is negative break the south wall from the current
 
+  int random = Random::Range(0, currentNeighbors.size());
+  Point2D randomNeighbor = currentNeighbors[random];
+
   if (!currentNeighbors.empty()){
-    //Change Initialization
-    int random;
-    Point2D randomNeighbor = currentNeighbors[random];
-    if(w->GetNorth(randomNeighbor)){
-      //Gets rid of North wall
-      w->SetNorth(randomNeighbor,true);
-    }
-    if(){
-      //Gets rid of South wall
-    }
-    if(){
+    Point2D delta = randomNeighbor - currentPoint;
+
+    if(delta.x > 0 && w->GetEast(currentPoint)){
       //Gets rid of East wall
+      w->SetEast(currentPoint,true);
     }
-    if(){
+    if(delta.x < 0 && w->GetWest(currentPoint)){
       //Gets rid of West wall
+      w->SetWest(currentPoint,true);
+    }
+    if(delta.y > 0 && w->GetNorth(currentPoint)){
+      //Gets rid of North wall
+      w->SetNorth(currentPoint,true);
+    }
+    if(delta.y < 0 && w->GetSouth(currentPoint)){
+      //Gets rid of South wall
+      w->SetSouth(currentPoint,true);
     }
     //Add Random Neighbor to Stack
     stack.push_back(randomNeighbor);
@@ -64,6 +70,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
     stack.pop_back();
     w->SetNodeColor(currentPoint, blackColor);
   }
+  currentPoint = randomNeighbor;
 
 return 0;
 }
