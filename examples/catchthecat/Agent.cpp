@@ -97,3 +97,27 @@ vector<Point2D> Agent::generatePath(World* world)
   }
   return path;
 }
+
+struct AStarNode{
+  Point2D pos;
+  float accumulatedCost;
+  float heuristic;
+  bool operator < (const AStarNode& n) const{
+      return this->accumulatedCost + this->heuristic > n.accumulatedCost + n.heuristic;
+  }
+};
+
+
+}
+
+vector<Point2D> Agent::generatePath(World* world)
+{
+  const auto catPos = world->getCat();
+  vector<Point2D> path;
+  priority_queue<AStarNode> frontier;
+  std::map<int, std::map<int,Point2D>> cameFrom;
+
+  Point2D exitPoint = catPos;
+  frontier.push({catPos, 0, world.})
+  cameFrom[catPos.y][catPos.x] = Point2D(0,0);
+}

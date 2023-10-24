@@ -249,3 +249,11 @@ bool World::catWinsOnSpace(Point2D point) {
   auto sideOver2 = sideSize / 2;
   return abs(point.x) == sideOver2 || abs(point.y) == sideOver2;
 }
+
+float World::distanceToBorder(Point2D point) {
+  if (abs(point.y) > abs(point.x)){
+
+  } else {
+
+  }
+}
