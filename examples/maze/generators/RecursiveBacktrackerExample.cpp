@@ -3,35 +3,28 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 bool RecursiveBacktrackerExample::Step(World* w) {
+  const Color32 greenColor = Color::Green;
+  const Color32 redColor = Color::Red;
+  const Color32 darkRedColor = Color::DarkRed;
 
-  const Color32 greenColor = Color32(0,1,0,1);
-  const Color32 redColor = Color32(1,0,0,1);
-  const Color32 blackColor = Color32(0,0,0,1);
-  Point2D currentPoint = Point2D(0,0);
-  std::vector<Point2D> currentNeighbors;
-  currentPoint = randomStartPoint(w);
+  auto currentPoint = randomStartPoint(w);
 
   //For last step duration
-  if(stack.empty() && currentPoint == Point2D{INT_MAX, INT_MAX})
-  {
-    return false;
+  if(stack.empty() && currentPoint == Point2D{INT_MAX, INT_MAX}) {
+    return false; // stop condition
   }
-  if(stack.empty()){ //For starting
-    currentPoint = randomStartPoint(w);
+  if(stack.empty()) { //For starting
     w->SetNodeColor(currentPoint,greenColor);
     stack.push_back(currentPoint);
     return true;
   }
-//  else{
-//    currentPoint = Point2D(stack.back().x,stack.back().y);
-//    w->SetNodeColor(currentPoint,redColor);
-//  }
+
+  currentPoint = stack.back();
 
   //Set Current Point to visited and get its Neighbors
   visited[currentPoint.x][currentPoint.y] = true;
   w->SetNodeColor(currentPoint, redColor);
-  currentNeighbors = getVisitables(w,currentPoint);
-
+  auto currentNeighbors = getVisitables(w,currentPoint);
 
   //Get delta of the point
   //Next - current
@@ -40,27 +33,27 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   // If delta y is positive break the north wall from the current
   // If delta y is negative break the south wall from the current
 
-  int random = Random::Range(0, currentNeighbors.size());
-  Point2D randomNeighbor = currentNeighbors[random];
-
   if (!currentNeighbors.empty()){
+    int random = Random::Range(0, currentNeighbors.size()-1);
+    Point2D randomNeighbor = currentNeighbors[random];
+    w->SetNodeColor(randomNeighbor, greenColor);
     Point2D delta = randomNeighbor - currentPoint;
 
     if(delta.x > 0 && w->GetEast(currentPoint)){
       //Gets rid of East wall
-      w->SetEast(currentPoint,true);
+      w->SetEast(currentPoint,false);
     }
     if(delta.x < 0 && w->GetWest(currentPoint)){
       //Gets rid of West wall
-      w->SetWest(currentPoint,true);
+      w->SetWest(currentPoint,false);
     }
     if(delta.y > 0 && w->GetNorth(currentPoint)){
       //Gets rid of North wall
-      w->SetNorth(currentPoint,true);
+      w->SetNorth(currentPoint,false);
     }
     if(delta.y < 0 && w->GetSouth(currentPoint)){
       //Gets rid of South wall
-      w->SetSouth(currentPoint,true);
+      w->SetSouth(currentPoint,false);
     }
     //Add Random Neighbor to Stack
     stack.push_back(randomNeighbor);
@@ -68,11 +61,9 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   else{
     //Remove Last Element
     stack.pop_back();
-    w->SetNodeColor(currentPoint, blackColor);
+    w->SetNodeColor(currentPoint, darkRedColor);
   }
-  currentPoint = randomNeighbor;
-
-return 0;
+  return true;
 }
 
 void RecursiveBacktrackerExample::Clear(World* world) {
@@ -101,19 +92,19 @@ std::vector<Point2D> RecursiveBacktrackerExample::getVisitables(World* w, const 
   std::vector<Point2D> visitables;
 
   //Point above
-  if(!visited[p.Up().x][p.Up().y] && p.Up().y>=-sideOver2){
+  if(p.Up().y>=-sideOver2 && !visited[p.Up().x][p.Up().y]){
     visitables.push_back(p.Up());
   }
   //Point below
-  if(!visited[p.Down().x][p.Down().y] && p.Down().y<=sideOver2){
+  if(p.Down().y<=sideOver2 && !visited[p.Down().x][p.Down().y]){
     visitables.push_back(p.Down());
   }
   //Point to the left
-  if(!visited[p.Left().x][p.Left().y] && p.Left().x>=-sideOver2){
+  if(p.Left().x>=-sideOver2 && !visited[p.Left().x][p.Left().y]){
     visitables.push_back(p.Left());
   }
   //Point to the right
-  if(!visited[p.Right().x][p.Right().y] && p.Right().x<=sideOver2){
+  if(p.Right().x<=sideOver2 && !visited[p.Right().x][p.Right().y]){
     visitables.push_back(p.Right());
   }
   return visitables;
