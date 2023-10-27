@@ -118,6 +118,29 @@ vector<Point2D> Agent::generatePath(World* world)
   std::map<int, std::map<int,Point2D>> cameFrom;
 
   Point2D exitPoint = catPos;
-  frontier.push({catPos, 0, world.})
+  frontier.push({catPos, 0, world->distanceToBorder(catPos)});
   cameFrom[catPos.y][catPos.x] = Point2D(0,0);
+  while (!frontier.empty()){
+      auto current = frontier.top();; // Get the next element to consume
+      frontier.pop(); //Consume
+      if(world->catWinsOnSpace(current.pos)){ // Stop condition
+        exitPoint = current.pos; //Store Exit Pos
+        break;
+      }
+
+      auto neighbors = world->neighbors(current.pos); //Vicinity
+      for( const auto& neighbor: neighbors){
+        if(neighbor != catPos && !cameFrom.contains(neighbor.x)){  //todo: This will probably have to be changed
+          frontier.push({neighbor,current.accumulatedCost+1,
+        world->distanceToBorder(neighbor)}); // Produce
+          cameFrom[neighbor.y][neighbor.x] = current.pos; // Update Flow Field
+        }
+      }
+  }
+  while(exitPoint != catPos){
+      path.push_back(exitPoint); // Add to Path
+      exitPoint = cameFrom[exitPoint.x][exitPoint.y]; // Update the iterator
+  }
+  // path.front() is the exit, path.back() is first possible cat move
+  return path;
 }

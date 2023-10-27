@@ -100,6 +100,9 @@ public:
   // returns distance from point to border
   float distanceToBorder(Point2D point);
 
+  // returns valid neighbors
+  std::vector<Point2D> NeighborsInsideBoundariesNotBlocked(Point2D point);
+
   static std::vector<Point2D> neighbors(Point2D point) {
     std::vector<Point2D> n;
     n.push_back(NE(point));

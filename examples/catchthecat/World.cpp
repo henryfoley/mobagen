@@ -257,3 +257,15 @@ float World::distanceToBorder(Point2D point) {
 
   }
 }
+
+std::vector<Point2D> World::NeighborsInsideBoundariesNotBlocked(Point2D point){
+    auto neighbors = this->neighbors(point);
+    std::vector<Point2D> validNeighbors;
+    for(auto neighbor: neighbors){
+      if(this->isValidPosition(neighbor) // Is on Map
+        && !this->getContent(neighbor)){ // Is not Blocked
+      validNeighbors.push_back(neighbor);
+      }
+    }
+    return validNeighbors;
+}
