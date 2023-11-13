@@ -47,11 +47,11 @@ bool RecursiveBacktrackerExample::Step(World* w) {
       //Gets rid of West wall
       w->SetWest(currentPoint,false);
     }
-    if(delta.y > 0 && w->GetNorth(currentPoint)){
+    if(delta.y < 0 && w->GetNorth(currentPoint)){
       //Gets rid of North wall
       w->SetNorth(currentPoint,false);
     }
-    if(delta.y < 0 && w->GetSouth(currentPoint)){
+    if(delta.y > 0 && w->GetSouth(currentPoint)){
       //Gets rid of South wall
       w->SetSouth(currentPoint,false);
     }
